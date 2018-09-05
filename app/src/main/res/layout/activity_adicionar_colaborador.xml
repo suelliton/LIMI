@@ -32,7 +32,7 @@
         android:id="@+id/resultado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Digite o nome de um usuário"/>
+        android:text=""/>
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_adicionar_colaborador"
         android:layout_width="fill_parent"

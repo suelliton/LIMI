@@ -1,12 +1,14 @@
 package com.example.suelliton.limi;
 
+import android.content.Context;
 import android.content.Intent;
-import android.database.DatabaseUtils;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,9 +18,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.suelliton.limi.adapters.DietaAdapter;
+import com.example.suelliton.limi.models.Colabora;
 import com.example.suelliton.limi.models.Dieta;
+import com.example.suelliton.limi.models.ItemColabora;
 import com.example.suelliton.limi.models.Usuario;
 import com.example.suelliton.limi.utils.MyDatabaseUtil;
 import com.google.firebase.database.ChildEventListener;
@@ -38,17 +43,20 @@ public class Principal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     RecyclerView recyclerDietas;
     FirebaseDatabase database;
+    DatabaseReference usuarioReference;
     DatabaseReference RootReference;
     ValueEventListener listener;
     DietaAdapter dietaAdapter;
+    Usuario usuarioLogado;
+    List<ItemColabora> itens;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal);
         database = MyDatabaseUtil.getDatabase();
-        RootReference = database.getReference("usuarios");
-
+        usuarioReference = database.getReference("usuarios");
+        RootReference = database.getReference();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -70,40 +78,104 @@ public class Principal extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-
+        Toast.makeText(this, "Usuario logado: "+LOGADO, Toast.LENGTH_SHORT).show();
 
         preecheRecycler();
 
+    }
 
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        preecheRecycler();
     }
 
     public void preecheRecycler(){
         final List<Dieta> listaDietas = new ArrayList<>();
-        dietaAdapter= new DietaAdapter(this,listaDietas);
+        dietaAdapter= new DietaAdapter(this, listaDietas);
         recyclerDietas = (RecyclerView) findViewById(R.id.recycler_dietas);
         recyclerDietas.setAdapter(dietaAdapter);
 
-
-        listener = RootReference.child(LOGADO).addValueEventListener(new ValueEventListener() {
+        Query query = usuarioReference.child(LOGADO).child("dietas").limitToFirst(20);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                listaDietas.removeAll(listaDietas);
-                if(dataSnapshot.exists()){
-                    Usuario usuario = dataSnapshot.getValue(Usuario.class);
-                    for (Dieta d: usuario.getDietas()) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        Dieta d = data.getValue(Dieta.class);
                         listaDietas.add(d);
                     }
                     dietaAdapter.notifyDataSetChanged();
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
+
+        Query query2 = usuarioReference.child(LOGADO).orderByKey();
+        itens = new ArrayList<>();
+        query2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                itens.removeAll(itens);
+                if(dataSnapshot.exists()) {
+                    usuarioLogado = dataSnapshot.getValue(Usuario.class);
+                    if(usuarioLogado != null){
+                        Toast.makeText(Principal.this, "Entrou na query 2 "+dataSnapshot.getValue(Usuario.class).getEmail(), Toast.LENGTH_SHORT).show();
+                        if(usuarioLogado.getColabora()!=null) {
+                            Colabora colabora = usuarioLogado.getColabora();
+                            itens = colabora.getUsuarios();
+                            Log.i("teste", "tamanho itens " + itens.size());
+                            for (ItemColabora i : itens) {
+                                Log.i("teste", i.getChaveUsuario());
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        Handler handler =  new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (ItemColabora item:itens ) {
+                    Query queryItem = usuarioReference.child(item.getChaveUsuario()).child("dietas").orderByKey().limitToFirst(20);
+                    queryItem.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                    Dieta d = data.getValue(Dieta.class);
+                                    listaDietas.add(d);
+                                }
+                                dietaAdapter.notifyDataSetChanged();
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+        },2000);
+
+
+
+
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
         recyclerDietas.setLayoutManager(layout);
@@ -159,7 +231,15 @@ public class Principal extends AppCompatActivity
 
         } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_logout) {
+            SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("usuarioLogado", "");
+            editor.apply();
+            LOGADO="";
+            //USUARIO_OBJETO_LOGADO = null;
+            startActivity(new Intent(Principal.this,Login.class));
+            finish();
 
         } else if (id == R.id.nav_share) {
 
@@ -170,5 +250,13 @@ public class Principal extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(listener != null){
+            usuarioReference.removeEventListener(listener);
+        }
     }
 }

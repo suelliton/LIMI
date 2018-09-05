@@ -37,7 +37,8 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".AdicionarDieta" />
-        <activity android:name=".AdicionarColaborador"></activity>
+        <activity android:name=".AdicionarColaborador" />
+        <activity android:name=".Racao"></activity>
     </application>
 
 </manifest>

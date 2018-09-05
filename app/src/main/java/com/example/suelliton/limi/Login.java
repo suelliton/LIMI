@@ -305,6 +305,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                         Usuario usuario = dataSnapshot.getValue(Usuario.class);
                         if(usuario.getPassword().equals(mPassword)){
                             USUARIO_OBJETO_LOGADO = usuario;
+                            LOGADO = dataSnapshot.getKey();
                         }
                     }
                 }
@@ -355,7 +356,7 @@ public class Login extends AppCompatActivity implements LoaderCallbacks<Cursor> 
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("usuarioLogado", USUARIO_OBJETO_LOGADO.getUsername());
                 editor.apply();
-                LOGADO = USUARIO_OBJETO_LOGADO.getUsername();
+                //LOGADO = USUARIO_OBJETO_LOGADO.getUsername();
                 startActivity(new Intent(Login.this,Principal.class));
                 finish();
             } else {

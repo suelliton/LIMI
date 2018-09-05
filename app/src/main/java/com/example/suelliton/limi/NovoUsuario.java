@@ -385,8 +385,8 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
 
                 Usuario novoUsuario = new Usuario(mEmail, mPassword, mUser);
 
-                RootReference = database.getReference("usuarios/"+mUser);
-                RootReference.setValue(novoUsuario);
+                RootReference = database.getReference("usuarios/");
+                RootReference.push().setValue(novoUsuario);
 
                 SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();

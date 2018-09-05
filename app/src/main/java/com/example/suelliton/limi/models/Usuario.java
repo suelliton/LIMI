@@ -9,6 +9,7 @@ public class Usuario {
     private String password;
     private boolean colaborador;
     private List<Dieta> dietas;
+    private Colabora colabora;
 
     public Usuario(){
 
@@ -21,7 +22,13 @@ public class Usuario {
         this.colaborador = false;
     }
 
+    public Colabora getColabora() {
+        return colabora;
+    }
 
+    public void setColabora(Colabora colabora) {
+        this.colabora = colabora;
+    }
 
     public boolean isColaborador() {
         return colaborador;

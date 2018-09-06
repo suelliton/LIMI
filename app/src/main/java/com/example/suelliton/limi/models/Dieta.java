@@ -6,15 +6,36 @@ import java.util.List;
 public class Dieta {
     private String nome;
     private String descricao;
+    private String usuario;
+    private String animal;
     private List<Racao> racoes;
 
     public Dieta() {
     }
 
-    public Dieta(String nome, String descricao) {
+
+    public Dieta(String nome, String descricao, String usuario, String animal) {
         this.nome = nome;
         this.descricao = descricao;
+        this.usuario = usuario;
+        this.animal = animal;
         this.racoes = new ArrayList<>();
+    }
+
+    public String getAnimal() {
+        return animal;
+    }
+
+    public void setAnimal(String animal) {
+        this.animal = animal;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
     public String getDescricao() {

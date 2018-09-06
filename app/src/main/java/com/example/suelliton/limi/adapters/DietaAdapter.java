@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.suelliton.limi.R;
+import com.example.suelliton.limi.RacaoActivity;
 import com.example.suelliton.limi.models.Dieta;
 
 import java.util.List;
@@ -30,26 +31,27 @@ public class DietaAdapter extends RecyclerView.Adapter {
 
         View view = LayoutInflater.from(context).inflate(R.layout.inflate_dietas, parent, false);
 
-        ExperimentoViewHolder holder = new ExperimentoViewHolder(view);
+        DietaViewHolder holder = new DietaViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        ExperimentoViewHolder experimentoholder = (ExperimentoViewHolder) holder;
+        DietaViewHolder dietaholder = (DietaViewHolder) holder;
         final Dieta dietaEscolhida = listaDietas.get(position);
 
-        experimentoholder.nome.setText(dietaEscolhida.getNome());
-        experimentoholder.descricao.setText(dietaEscolhida.getDescricao());
+        dietaholder.nome.setText(dietaEscolhida.getNome());
+        dietaholder.descricao.setText(dietaEscolhida.getDescricao());
 
-        experimentoholder.row.setOnClickListener(new View.OnClickListener() {
+        dietaholder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle bundle = new Bundle();
                 bundle.putString("nomeDieta",dietaEscolhida.getNome());
-                //Intent intent = new Intent(view.getContext(),DetalhesActivity.class);
-                //intent.putExtras(bundle);
-                //context.startActivity(intent);
+                bundle.putString("nomeUsuario",dietaEscolhida.getUsuario());
+                Intent intent = new Intent(view.getContext(),RacaoActivity.class);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             }
         });
 
@@ -61,11 +63,11 @@ public class DietaAdapter extends RecyclerView.Adapter {
         return  listaDietas == null ? 0 :  listaDietas.size();
     }
 
-    public class ExperimentoViewHolder extends RecyclerView.ViewHolder {
+    public class DietaViewHolder extends RecyclerView.ViewHolder {
         final TextView nome;
         final TextView descricao;
         final LinearLayout row;
-        public ExperimentoViewHolder(View v) {
+        public DietaViewHolder(View v) {
             super(v);
             nome = v.findViewById(R.id.label_nome);
             descricao = v.findViewById(R.id.label_descricao);

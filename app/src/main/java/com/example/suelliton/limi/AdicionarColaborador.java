@@ -36,7 +36,7 @@ public class AdicionarColaborador extends AppCompatActivity {
     EditText edPesquisa;
     TextView tvResultado;
     String aColaborar;
-    boolean colaboradorExiste;
+    boolean colaboradorExiste;//guarda se o colaborador existe na lista
     List<Usuario> listaUsuarios;
     List<Colabora> listaColaboradores;
     Colabora colabora;
@@ -89,7 +89,7 @@ public class AdicionarColaborador extends AppCompatActivity {
                         if (dataSnapshot.exists()) {
                             colabora = dataSnapshot.getValue(Colabora.class);
                             if(colabora != null){
-                                for (ItemColabora item: colabora.getUsuarios()  ) {
+                                for (ItemColabora item: colabora.getUsuarios()  ) {//verifica se o usuario ja esta na lista de "patrao" do outro usuario
                                     if(item.getChaveUsuario().equals(LOGADO)){
                                         colaboradorExiste = true;
                                     }

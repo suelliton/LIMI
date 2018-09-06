@@ -9,6 +9,9 @@ public class Aplicacao {
     private float adicionado;
     private float consumoDiario;
 
+    public Aplicacao() {
+    }
+
     public Aplicacao(int dia, int mes, int ano, float sobra, float consumido, float adicionado, float consumoDiario) {
         this.dia = dia;
         this.mes = mes;

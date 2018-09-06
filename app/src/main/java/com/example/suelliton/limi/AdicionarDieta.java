@@ -27,6 +27,7 @@ public class AdicionarDieta extends AppCompatActivity {
     Button btnSalvarDieta;
     EditText ed_nome;
     EditText ed_descricao;
+    EditText ed_animal;
     FirebaseDatabase database;
     DatabaseReference RootReference;
     ValueEventListener listener;
@@ -41,6 +42,7 @@ public class AdicionarDieta extends AppCompatActivity {
         boolean existe = false;
         ed_nome = (EditText) findViewById(R.id.nome);
         ed_descricao = (EditText) findViewById(R.id.descricao);
+        ed_animal = (EditText) findViewById(R.id.animal);
         btnSalvarDieta = (Button) findViewById(R.id.btn_salvar_dieta);
 
         btnSalvarDieta.setOnClickListener(new View.OnClickListener() {
@@ -75,7 +77,7 @@ public class AdicionarDieta extends AppCompatActivity {
     public void salvarDieta(){
         String nome = ed_nome.getText().toString();
         String descricao = ed_descricao.getText().toString();
-
+        String animal = ed_animal.getText().toString();
         if(nome.equals("") || descricao.equals("")){
             Toast.makeText(this, "Preencha os campos corretamente", Toast.LENGTH_SHORT).show();
         }else{
@@ -86,7 +88,7 @@ public class AdicionarDieta extends AppCompatActivity {
                 }
             }
             if(!existe){
-                Dieta dieta = new Dieta(nome, descricao);
+                Dieta dieta = new Dieta(nome, descricao,LOGADO,animal);
                 salvaNoFirebase(dieta);
 
             }else{

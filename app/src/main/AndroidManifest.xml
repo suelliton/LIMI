@@ -38,7 +38,9 @@
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".AdicionarDieta" />
         <activity android:name=".AdicionarColaborador" />
-        <activity android:name=".Racao"></activity>
+        <activity android:name=".RacaoActivity" />
+        <activity android:name=".AdicionaRacao" />
+        <activity android:name=".DadosActivity"></activity>
     </application>
 
 </manifest>

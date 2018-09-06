@@ -41,6 +41,7 @@ import static com.example.suelliton.limi.Splash.LOGADO;
 
 public class Principal extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static List<Dieta> DIETAS;
     RecyclerView recyclerDietas;
     FirebaseDatabase database;
     DatabaseReference usuarioReference;
@@ -91,8 +92,8 @@ public class Principal extends AppCompatActivity
     }
 
     public void preecheRecycler(){
-        final List<Dieta> listaDietas = new ArrayList<>();
-        dietaAdapter= new DietaAdapter(this, listaDietas);
+        DIETAS = new ArrayList<>();
+        dietaAdapter= new DietaAdapter(this, DIETAS);
         recyclerDietas = (RecyclerView) findViewById(R.id.recycler_dietas);
         recyclerDietas.setAdapter(dietaAdapter);
 
@@ -100,10 +101,11 @@ public class Principal extends AppCompatActivity
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                DIETAS.removeAll(DIETAS);
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         Dieta d = data.getValue(Dieta.class);
-                        listaDietas.add(d);
+                        DIETAS.add(d);
                     }
                     dietaAdapter.notifyDataSetChanged();
                 }
@@ -157,7 +159,7 @@ public class Principal extends AppCompatActivity
                             if (dataSnapshot.exists()) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                                     Dieta d = data.getValue(Dieta.class);
-                                    listaDietas.add(d);
+                                    DIETAS.add(d);
                                 }
                                 dietaAdapter.notifyDataSetChanged();
                             }

@@ -1,5 +1,6 @@
 package com.example.suelliton.limi.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tratamento {
@@ -7,8 +8,11 @@ public class Tratamento {
     private int numero ;
     private String nome;
 
-    public Tratamento(List<Peso> pesos, int numero, String nome) {
-        this.pesos = pesos;
+    public Tratamento() {
+    }
+
+    public Tratamento(int numero, String nome) {
+        this.pesos = new ArrayList<>();
         this.numero = numero;
         this.nome = nome;
     }

@@ -1,16 +1,20 @@
 package com.example.suelliton.limi.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Racao {
     private String nome;
     private List<Aplicacao> aplicacoes;
-    private Engorda engorda;
+    private List<Tratamento> tratamentos;
 
-    public Racao(String nome, List<Aplicacao> aplicacoes, Engorda engorda) {
+    public Racao() {
+    }
+
+    public Racao(String nome) {
         this.nome = nome;
-        this.aplicacoes = aplicacoes;
-        this.engorda = engorda;
+        this.aplicacoes = new ArrayList<>();
+        this.tratamentos = new ArrayList<>();
     }
 
     public String getNome() {
@@ -29,11 +33,11 @@ public class Racao {
         this.aplicacoes = aplicacoes;
     }
 
-    public Engorda getEngorda() {
-        return engorda;
+    public List<Tratamento> getTratamentos() {
+        return tratamentos;
     }
 
-    public void setEngorda(Engorda engorda) {
-        this.engorda = engorda;
+    public void setTratamentos(List<Tratamento> tratamentos) {
+        this.tratamentos = tratamentos;
     }
 }

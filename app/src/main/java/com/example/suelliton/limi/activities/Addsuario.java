@@ -1,4 +1,4 @@
-package com.example.suelliton.limi;
+package com.example.suelliton.limi.activities;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,9 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -31,44 +29,47 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.models.Usuario;
-import com.example.suelliton.limi.utils.MyDatabaseUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
-import static android.Manifest.permission.READ_CONTACTS;
-import static com.example.suelliton.limi.Splash.LOGADO;
 
-public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+import static com.example.suelliton.limi.activities.Splash.LOGADO;
+import static com.example.suelliton.limi.activities.Splash.usuarioReference;
+
+public class Addsuario extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
     private UserLoginTask mAuthTask = null;
-    // UI references.
-    private EditText mUserView;
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mCadastroFormView;
-    private Usuario USUARIO_OBJETO_LOGADO;
-
-    private FirebaseDatabase database ;
-    private DatabaseReference RootReference ;
+    private EditText ed_login;
+    private AutoCompleteTextView ac_email;
+    private EditText ed_password;
+    Button btnSalvarUsuario;
+    private View progressView;
+    private View cadastroFormView;
     private ValueEventListener listener;
     boolean passUser = false;
     boolean passEmail = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.novo_usuario);
-
-        database = MyDatabaseUtil.getDatabase();
-        RootReference = database.getReference("usuarios");
-
-        mUserView = (EditText) findViewById(R.id.user_cadastro);
-        mUserView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        setContentView(R.layout.add_usuario_activity);
+        findViews();
+        setViewListeners();
+    }
+    public void findViews(){
+        ed_login = (EditText) findViewById(R.id.user_cadastro);
+        ac_email = (AutoCompleteTextView) findViewById(R.id.email_cadastro);
+        ed_password = (EditText) findViewById(R.id.password_cadastro);
+        btnSalvarUsuario = (Button) findViewById(R.id.cadastro_button);
+        cadastroFormView = findViewById(R.id.login_form);
+        progressView = findViewById(R.id.login_progress);
+    }
+    public void setViewListeners(){
+        ed_login.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -78,12 +79,7 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
                 return false;
             }
         });
-
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email_cadastro);
-        populateAutoComplete();
-
-        mPasswordView = (EditText) findViewById(R.id.password_cadastro);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        ed_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -93,60 +89,12 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
                 return false;
             }
         });
-
-        Button mEmailSignInButton = (Button) findViewById(R.id.cadastro_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        btnSalvarUsuario.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-
-        mCadastroFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-    }
-
-    private void populateAutoComplete() {
-        if (!mayRequestContacts()) {
-            return;
-        }
-
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    private boolean mayRequestContacts() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return true;
-        }
-        if (checkSelfPermission(READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
-            Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
-        } else {
-            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-        }
-        return false;
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                populateAutoComplete();
-            }
-        }
     }
 
 
@@ -154,53 +102,44 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
         if (mAuthTask != null) {
             return;
         }
-
         // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-        mUserView.setError(null);
-
+        ac_email.setError(null);
+        ed_password.setError(null);
+        ed_login.setError(null);
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-        String user = mUserView.getText().toString();
-
+        String email = ac_email.getText().toString();
+        String password = ed_password.getText().toString();
+        String user = ed_login.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
-
         // Check for a valid password, if the user entered one.
         if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
+            ed_password.setError(getString(R.string.error_invalid_password));
+            focusView = ed_password;
             cancel = true;
         }
-
         // Check for a valid user, if the user entered one.
         if (!TextUtils.isEmpty(user) && !isUserValid(user)) {
-            mUserView.setError(getString(R.string.error_invalid_user));
-            focusView = mUserView;
+            ed_login.setError(getString(R.string.error_invalid_user));
+            focusView = ed_login;
             cancel = true;
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
+            ac_email.setError(getString(R.string.error_field_required));
+            focusView = ac_email;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
+            ac_email.setError(getString(R.string.error_invalid_email));
+            focusView = ac_email;
             cancel = true;
         }
 
         if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password,user);
             mAuthTask.execute((Void) null);
@@ -232,28 +171,28 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mCadastroFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mCadastroFormView.animate().setDuration(shortAnimTime).alpha(
+            cadastroFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            cadastroFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mCadastroFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    cadastroFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressView.animate().setDuration(shortAnimTime).alpha(
                     show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mCadastroFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            cadastroFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -294,10 +233,10 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(NovoUsuario.this,
+                new ArrayAdapter<>(Addsuario.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
-        mEmailView.setAdapter(adapter);
+        ac_email.setAdapter(adapter);
     }
 
 
@@ -311,40 +250,46 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
         int IS_PRIMARY = 1;
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
         private final String mPassword;
-        private final String mUser;
+        private final String mLogin;
 
         UserLoginTask(String email, String password,String user) {
             mEmail = email;
             mPassword = password;
-            mUser = user;
+            mLogin = user;
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             // TODO: attempt authentication against a network service.
-            final List<Usuario> listaUsuarios = new ArrayList<>();
-            listener = RootReference.addValueEventListener(new ValueEventListener() {
+
+            usuarioReference.orderByChild("username").equalTo(mLogin).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    listaUsuarios.removeAll(listaUsuarios);
-                    if (dataSnapshot.exists()) {
-                        for (DataSnapshot u: dataSnapshot.getChildren()) {
-                            Usuario usuario = u.getValue(Usuario.class);
-                            listaUsuarios.add(usuario);
-                        }
-
-
+                    if(dataSnapshot.exists()){
+                        passUser = false;
+                    }else{
+                        passUser = true;
                     }
                 }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
+                }
+            });
+
+            usuarioReference.orderByChild("email").equalTo(mEmail).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        passEmail = false;
+                    }else{
+                        passEmail = true;
+                    }
+                }
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
@@ -358,74 +303,37 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
                 return false;
             }
 
-            for (Usuario usuario: listaUsuarios ) {
-                if(usuario.getUsername().equals(mUser)){
-                    passUser = false;
-                    return false;
-
-                }else{
-                    if(usuario.getEmail().equals(mEmail)){
-                        passEmail = false;
-                        return false;
-                    }else{
-                        passUser = true;
-                        passEmail = true;
-                    }
-                }
-            }
-            //se nao tiver nenhum usuario cadastrado ele cadastra o primeiro normalmente
-            if(listaUsuarios.size() == 0){
-                passUser = true;
-                passEmail = true;
-            }
-
-
-
             if(passEmail && passUser) {
-
-                Usuario novoUsuario = new Usuario(mEmail, mPassword, mUser);
-
-                RootReference = database.getReference("usuarios/");
-                RootReference.push().setValue(novoUsuario);
-
+                Usuario novoUsuario = new Usuario(mEmail, mPassword, mLogin);
+                usuarioReference.child(novoUsuario.getUsername()).setValue(novoUsuario);
                 SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("usuarioLogado", novoUsuario.getUsername());
                 editor.apply();
-
                 LOGADO = novoUsuario.getUsername();
                 return true;
-
             }else{
-
                 return  false;
             }
-
-
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
             mAuthTask = null;
             showProgress(false);
-
             if (success) {
-                Toast.makeText(NovoUsuario.this, "Usuário  cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
-
-                startActivity(new Intent(NovoUsuario.this,Principal.class));
+                Toast.makeText(Addsuario.this, "Usuário  cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(Addsuario.this,ListExperimento.class));
                 finish();
             } else {
                     if(!passUser){
-                        mUserView.requestFocus();
-                        Toast.makeText(NovoUsuario.this, "Username já existe tente outro", Toast.LENGTH_SHORT).show();
+                        ed_login.requestFocus();
+                        Toast.makeText(Addsuario.this, "Username já existe tente outro", Toast.LENGTH_SHORT).show();
                     }
                     if(!passEmail){
-                        mEmailView.requestFocus();
-                        Toast.makeText(NovoUsuario.this, "Já existe um usuário para este email ", Toast.LENGTH_SHORT).show();
-
+                        ac_email.requestFocus();
+                        Toast.makeText(Addsuario.this, "Já existe um usuário para este email ", Toast.LENGTH_SHORT).show();
                     }
-                //mPasswordView.setError(getString(R.string.error_incorrect_password));
-                //mPasswordView.requestFocus();
             }
         }
 
@@ -440,7 +348,7 @@ public class NovoUsuario extends AppCompatActivity implements LoaderCallbacks<Cu
     protected void onPause() {
         super.onPause();
         if(listener != null){
-            RootReference.removeEventListener(listener);
+            usuarioReference.removeEventListener(listener);
         }
     }
 }

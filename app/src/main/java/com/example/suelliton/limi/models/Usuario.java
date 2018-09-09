@@ -8,8 +8,8 @@ public class Usuario {
     private String email;
     private String password;
     private boolean colaborador;
-    private List<Dieta> dietas;
-    private Colabora colabora;
+    private String experimentos;
+
 
     public Usuario(){
 
@@ -18,28 +18,12 @@ public class Usuario {
         this.email = email;
         this.password = password;
         this.username = username;
-        this.dietas = new ArrayList<>();
-        this.colaborador = false;
+        this.experimentos = "";
     }
 
-    public Colabora getColabora() {
-        return colabora;
-    }
-
-    public void setColabora(Colabora colabora) {
-        this.colabora = colabora;
-    }
 
     public boolean isColaborador() {
         return colaborador;
-    }
-
-    public List<Dieta> getDietas() {
-        return dietas;
-    }
-
-    public void setDietas(List<Dieta> dietas) {
-        this.dietas = dietas;
     }
 
     public void setColaborador(boolean colaborador) {

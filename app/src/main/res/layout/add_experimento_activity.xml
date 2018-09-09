@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AdicionarDieta">
+    tools:context=".activities.AddExperimento">
 
     <LinearLayout
         android:orientation="vertical"
@@ -32,18 +32,32 @@
             android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="animal"
+            android:text="Especie"
             tools:layout_editor_absoluteX="141dp"
             tools:layout_editor_absoluteY="16dp" />
         <EditText
-            android:id="@+id/animal"
+            android:id="@+id/especie"
             android:inputType="text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Quantidade de animais" />
+
+        <EditText
+            android:id="@+id/qtd_animais"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_salvar_dieta"

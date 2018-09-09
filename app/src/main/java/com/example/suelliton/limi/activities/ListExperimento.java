@@ -1,14 +1,12 @@
-package com.example.suelliton.limi;
+package com.example.suelliton.limi.activities;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,13 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.suelliton.limi.adapters.DietaAdapter;
-import com.example.suelliton.limi.models.Colabora;
-import com.example.suelliton.limi.models.Dieta;
-import com.example.suelliton.limi.models.ItemColabora;
-import com.example.suelliton.limi.models.Usuario;
+import com.example.suelliton.limi.R;
+import com.example.suelliton.limi.adapters.ExperimentoAdapter;
+import com.example.suelliton.limi.models.Experimento;
+
 import com.example.suelliton.limi.utils.MyDatabaseUtil;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,27 +33,27 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.suelliton.limi.Splash.LOGADO;
+import static com.example.suelliton.limi.activities.Splash.LOGADO;
 
-public class Principal extends AppCompatActivity
+
+import static com.example.suelliton.limi.activities.Splash.database;
+import static com.example.suelliton.limi.activities.Splash.usuarioReference;
+
+public class ListExperimento extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    public static List<Dieta> DIETAS;
-    RecyclerView recyclerDietas;
-    FirebaseDatabase database;
-    DatabaseReference usuarioReference;
-    DatabaseReference RootReference;
+    RecyclerView recyclerExperimento;
+    public static DatabaseReference logadoReference;
+
     ValueEventListener listener;
-    DietaAdapter dietaAdapter;
-    Usuario usuarioLogado;
-    List<ItemColabora> itens;
+    ExperimentoAdapter experimentoAdapter;
+    List<Experimento> listaExperimentos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.principal);
         database = MyDatabaseUtil.getDatabase();
-        usuarioReference = database.getReference("usuarios");
-        RootReference = database.getReference();
+        logadoReference = database.getReference("usuarios").child(LOGADO);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -65,7 +61,7 @@ public class Principal extends AppCompatActivity
         fabAddDieta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Principal.this,AdicionarDieta.class));
+                startActivity(new Intent(ListExperimento.this,AddExperimento.class));
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show();
             }
@@ -76,14 +72,13 @@ public class Principal extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Toast.makeText(this, "Usuario logado: "+LOGADO, Toast.LENGTH_SHORT).show();
 
         preecheRecycler();
 
-    }
+        }
 
     @Override
     protected void onStart() {
@@ -92,22 +87,23 @@ public class Principal extends AppCompatActivity
     }
 
     public void preecheRecycler(){
-        DIETAS = new ArrayList<>();
-        dietaAdapter= new DietaAdapter(this, DIETAS);
-        recyclerDietas = (RecyclerView) findViewById(R.id.recycler_dietas);
-        recyclerDietas.setAdapter(dietaAdapter);
 
-        Query query = usuarioReference.child(LOGADO).child("dietas").limitToFirst(20);
+        listaExperimentos= new ArrayList<>();
+        experimentoAdapter = new ExperimentoAdapter(this, listaExperimentos);
+        recyclerExperimento = (RecyclerView) findViewById(R.id.recycler_dietas);
+        recyclerExperimento.setAdapter(experimentoAdapter);
+
+        Query query = logadoReference.child("experimentos");
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                DIETAS.removeAll(DIETAS);
+                listaExperimentos.removeAll(listaExperimentos);
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        Dieta d = data.getValue(Dieta.class);
-                        DIETAS.add(d);
+                        Experimento e = data.getValue(Experimento.class);
+                        listaExperimentos.add(e);
                     }
-                    dietaAdapter.notifyDataSetChanged();
+                    experimentoAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -116,71 +112,9 @@ public class Principal extends AppCompatActivity
 
             }
         });
-
-
-        Query query2 = usuarioReference.child(LOGADO).orderByKey();
-        itens = new ArrayList<>();
-        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                itens.removeAll(itens);
-                if(dataSnapshot.exists()) {
-                    usuarioLogado = dataSnapshot.getValue(Usuario.class);
-                    if(usuarioLogado != null){
-                        Toast.makeText(Principal.this, "Entrou na query 2 "+dataSnapshot.getValue(Usuario.class).getEmail(), Toast.LENGTH_SHORT).show();
-                        if(usuarioLogado.getColabora()!=null) {
-                            Colabora colabora = usuarioLogado.getColabora();
-                            itens = colabora.getUsuarios();
-                            Log.i("teste", "tamanho itens " + itens.size());
-                            for (ItemColabora i : itens) {
-                                Log.i("teste", i.getChaveUsuario());
-                            }
-                        }
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        Handler handler =  new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                for (ItemColabora item:itens ) {
-                    Query queryItem = usuarioReference.child(item.getChaveUsuario()).child("dietas").orderByKey().limitToFirst(20);
-                    queryItem.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    Dieta d = data.getValue(Dieta.class);
-                                    DIETAS.add(d);
-                                }
-                                dietaAdapter.notifyDataSetChanged();
-                            }
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
-        },2000);
-
-
-
-
 
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false);
-        recyclerDietas.setLayoutManager(layout);
+        recyclerExperimento.setLayoutManager(layout);
 
 
 
@@ -227,7 +161,7 @@ public class Principal extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_adicionar_colaborador) {
-            startActivity(new Intent(Principal.this,AdicionarColaborador.class));
+            startActivity(new Intent(ListExperimento.this,AddColaborador.class));
 
         } else if (id == R.id.nav_gallery) {
 
@@ -240,7 +174,7 @@ public class Principal extends AppCompatActivity
             editor.apply();
             LOGADO="";
             //USUARIO_OBJETO_LOGADO = null;
-            startActivity(new Intent(Principal.this,Login.class));
+            startActivity(new Intent(ListExperimento.this,Login.class));
             finish();
 
         } else if (id == R.id.nav_share) {

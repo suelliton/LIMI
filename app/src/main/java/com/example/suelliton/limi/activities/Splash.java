@@ -1,4 +1,4 @@
-package com.example.suelliton.limi;
+package com.example.suelliton.limi.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.models.Usuario;
 import com.example.suelliton.limi.utils.MyDatabaseUtil;
 import com.google.firebase.database.ChildEventListener;
@@ -22,18 +23,17 @@ import com.google.firebase.database.Query;
 
 public class Splash extends AppCompatActivity {
     public static String LOGADO;
-    private FirebaseDatabase database ;
-    private DatabaseReference RootReference ;
-    ProgressBar progressBar;
+    public static FirebaseDatabase database ;
+    public static DatabaseReference usuarioReference;
+    public static DatabaseReference rootReference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
-
         database = MyDatabaseUtil.getDatabase();
-
-        RootReference = database.getReference("usuarios");
-
+        rootReference = database.getReference();
+        usuarioReference = database.getReference("usuarios");
 
         SharedPreferences sharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE);
         //depois tirar esse trecho senao vai dar bode e nao guardar o usuario logado
@@ -42,7 +42,6 @@ public class Splash extends AppCompatActivity {
         //editor.apply();
         //depois tirar esse trecho senao vai dar bode e nao guardar o usuario logado
 
-
         LOGADO = sharedPreferences.getString("usuarioLogado", "");
 
     }
@@ -50,24 +49,18 @@ public class Splash extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Query queryUsuario = RootReference.orderByChild("username").equalTo(LOGADO).limitToFirst(1);
-
+        Query queryUsuario = usuarioReference.orderByChild("username").equalTo(LOGADO).limitToFirst(1);
         if (!LOGADO.equals("")) {
-            //progressBar.setVisibility(View.VISIBLE);
-
             queryUsuario.addChildEventListener(new ChildEventListener() {
-
-
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     try {
                         Usuario usuario = dataSnapshot.getValue(Usuario.class);
                         if (usuario != null) {
                             //Toast.makeText(SplashActivity.this, "usuario logado : "+LOGADO, Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Splash.this, Principal.class));
+                            startActivity(new Intent(Splash.this, ListExperimento.class));
                             finish();
                         }
-
                     } catch (Exception e) {
                         Toast.makeText(Splash.this, "Erro no banco de dados, contate administrador.", Toast.LENGTH_SHORT).show();
                     }

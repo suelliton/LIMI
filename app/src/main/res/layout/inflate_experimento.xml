@@ -15,18 +15,24 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         tools:layout_editor_absoluteY="25dp">
+
         <LinearLayout
-            android:id="@+id/row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/fab_margin"
-            android:paddingTop="@dimen/fab_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:id="@+id/row"
+                android:layout_weight="8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/fab_margin"
+                android:paddingTop="@dimen/fab_margin"
+                >
 
                 <TextView
                     android:id="@+id/label_nome"
@@ -36,6 +42,7 @@
                     android:text=" 3 Fotos"
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="15dp" />
+
                 <TextView
                     android:id="@+id/label_descricao"
                     android:layout_width="wrap_content"
@@ -45,6 +52,29 @@
                     android:textColor="@color/colorPrimaryDark"
                     android:textSize="15dp" />
 
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.CoordinatorLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fab_adicionar_dia"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/fab_margin"
+                        android:src="@android:drawable/ic_input_add" />
+
+                </android.support.design.widget.CoordinatorLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>

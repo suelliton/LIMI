@@ -17,14 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Principal"
+            android:name=".activities.ListExperimento"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Login"
+            android:name=".activities.Login"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Splash">
+        <activity android:name=".activities.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,15 +32,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NovoUsuario"
+            android:name=".activities.Addsuario"
             android:label="@string/title_activity_novo_usuario"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".AdicionarDieta" />
-        <activity android:name=".AdicionarColaborador" />
-        <activity android:name=".RacaoActivity" />
-        <activity android:name=".AdicionaRacao" />
-        <activity android:name=".DadosActivity"></activity>
+        <activity android:name=".activities.AddExperimento" />
+        <activity android:name=".activities.AddColaborador" />
+        <activity android:name=".activities.ShowGrafico" />
+        <activity android:name=".activities.AddDados"></activity>
     </application>
 
 </manifest>

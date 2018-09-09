@@ -1,4 +1,4 @@
-package com.example.suelliton.limi;
+package com.example.suelliton.limi.activities;
 
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.models.Colabora;
-import com.example.suelliton.limi.models.Dieta;
 import com.example.suelliton.limi.models.ItemColabora;
 import com.example.suelliton.limi.models.Usuario;
 import com.example.suelliton.limi.utils.MyDatabaseUtil;
@@ -23,14 +23,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.suelliton.limi.Splash.LOGADO;
+import static com.example.suelliton.limi.activities.Splash.LOGADO;
+import static com.example.suelliton.limi.activities.Splash.rootReference;
+import static com.example.suelliton.limi.activities.Splash.usuarioReference;
 
-public class AdicionarColaborador extends AppCompatActivity {
-    FirebaseDatabase database;
-    DatabaseReference RootReference;
-    DatabaseReference usuarioReference;
+public class AddColaborador extends AppCompatActivity {
     ValueEventListener listener;
-    ValueEventListener listenerColaboradores;
     Button btnPesquisar;
     Button btnAdicionar;
     EditText edPesquisa;
@@ -38,15 +36,11 @@ public class AdicionarColaborador extends AppCompatActivity {
     String aColaborar;
     boolean colaboradorExiste;//guarda se o colaborador existe na lista
     List<Usuario> listaUsuarios;
-    List<Colabora> listaColaboradores;
     Colabora colabora;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_adicionar_colaborador);
-        database = MyDatabaseUtil.getDatabase();
-        usuarioReference = database.getReference("usuarios");
-        RootReference = database.getReference();
+        setContentView(R.layout.add_colaborador_activity);
         btnPesquisar = (Button) findViewById(R.id.btn_pesquisar_colaborador);
         btnAdicionar = (Button) findViewById(R.id.btn_adicionar_colaborador);
         btnAdicionar.setVisibility(View.INVISIBLE);
@@ -96,7 +90,6 @@ public class AdicionarColaborador extends AppCompatActivity {
                                 }
                             }
 
-
                         }
                     }
 
@@ -135,8 +128,7 @@ public class AdicionarColaborador extends AppCompatActivity {
     }
     public void carregaInformacoes(){
 
-
-        listener = RootReference.addValueEventListener(new ValueEventListener() {
+        listener = rootReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listaUsuarios.removeAll(listaUsuarios);

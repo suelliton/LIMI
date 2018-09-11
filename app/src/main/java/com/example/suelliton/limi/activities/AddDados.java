@@ -33,7 +33,7 @@ import static com.example.suelliton.limi.adapters.ExperimentoAdapter.experimento
 
 
 public class AddDados extends AppCompatActivity {
-    final String listaSpinner[] = {"Racao 1","Racao 2","Racao 3","Racao4","Racao 5"};
+    final String listaSpinner[] = {"Racao 1","Racao 2","Racao 3","Racao 4","Racao 5"};
     Spinner spinner;
     Button btnSalvarDados;
     String racao ;

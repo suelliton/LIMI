@@ -5,6 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.AddExperimento">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <LinearLayout
         android:orientation="vertical"
@@ -58,6 +61,11 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="number" />
+        <LinearLayout
+            android:id="@+id/linear_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_salvar_dieta"
@@ -69,5 +77,5 @@
             android:text="Salvar" />
     </LinearLayout>
 
-
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

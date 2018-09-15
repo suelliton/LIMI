@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
@@ -33,7 +32,6 @@ import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.models.Usuario;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,6 @@ import static com.example.suelliton.limi.activities.Splash.LOGADO;
 import static com.example.suelliton.limi.activities.Splash.usuarioReference;
 
 public class Addsuario extends AppCompatActivity implements LoaderCallbacks<Cursor> {
-    private static final int REQUEST_READ_CONTACTS = 0;
     private UserLoginTask mAuthTask = null;
     private EditText ed_login;
     private AutoCompleteTextView ac_email;
@@ -53,6 +50,7 @@ public class Addsuario extends AppCompatActivity implements LoaderCallbacks<Curs
     private ValueEventListener listener;
     boolean passUser = false;
     boolean passEmail = false;
+    TextView tv_login;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +65,7 @@ public class Addsuario extends AppCompatActivity implements LoaderCallbacks<Curs
         btnSalvarUsuario = (Button) findViewById(R.id.cadastro_button);
         cadastroFormView = findViewById(R.id.login_form);
         progressView = findViewById(R.id.login_progress);
+        tv_login = findViewById(R.id.link_login);
     }
     public void setViewListeners(){
         ed_login.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -93,6 +92,12 @@ public class Addsuario extends AppCompatActivity implements LoaderCallbacks<Curs
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+        tv_login.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Addsuario.this,Login.class));
             }
         });
     }
@@ -323,7 +328,7 @@ public class Addsuario extends AppCompatActivity implements LoaderCallbacks<Curs
             showProgress(false);
             if (success) {
                 Toast.makeText(Addsuario.this, "Usuário  cadastrado com sucesso!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(Addsuario.this,ListExperimento.class));
+                startActivity(new Intent(Addsuario.this,Experimento.class));
                 finish();
             } else {
                     if(!passUser){

@@ -1,6 +1,8 @@
 package com.example.suelliton.limi.models;
 
-public class Dia {
+import java.util.List;
+
+public class Coleta {
     private String racao;
     private float adicionado;
     private float sobra;
@@ -9,11 +11,12 @@ public class Dia {
     private int dia;
     private int mes;
     private int ano;
+    private List<Animal> pesagem;
 
-    public Dia() {
+    public Coleta() {
     }
 
-    public Dia(String racao, float adicionado, float sobra, float consumido, float percentualConsumido, int dia, int mes, int ano) {
+    public Coleta(String racao, float adicionado, float sobra, float consumido, float percentualConsumido, int dia, int mes, int ano) {
         this.racao = racao;
         this.adicionado = adicionado;
         this.sobra = sobra;
@@ -22,6 +25,14 @@ public class Dia {
         this.dia = dia;
         this.mes = mes;
         this.ano = ano;
+    }
+
+    public List<Animal> getPesagem() {
+        return pesagem;
+    }
+
+    public void setPesagem(List<Animal> pesagem) {
+        this.pesagem = pesagem;
     }
 
     public int getDia() {

@@ -1,5 +1,6 @@
 package com.example.suelliton.limi.activities;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,27 +14,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.suelliton.limi.R;
-import com.example.suelliton.limi.models.Dia;
+import com.example.suelliton.limi.models.Animal;
+import com.example.suelliton.limi.models.Coleta;
 import com.example.suelliton.limi.models.Experimento;
-import com.example.suelliton.limi.utils.MyDatabaseUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import static com.example.suelliton.limi.activities.ListExperimento.logadoReference;
-import static com.example.suelliton.limi.activities.Splash.LOGADO;
+import static com.example.suelliton.limi.activities.Experimento.logadoReference;
 import static com.example.suelliton.limi.adapters.ExperimentoAdapter.experimentoClicado;
 
 
 public class AddDados extends AppCompatActivity {
-    final String listaSpinner[] = {"Racao 1","Racao 2","Racao 3","Racao 4","Racao 5"};
+    final String listaSpinner[] = {"Padrão","Low Carb","Low Fat","Low Prot","Low Prot/Carb/Fat","Low Carb/Fat",
+    "High Carb","High Fat","High Prot","High Prot/Carb/Fat","High Carb/Fat"};
     Spinner spinner;
     Button btnSalvarDados;
     String racao ;
@@ -41,9 +42,12 @@ public class AddDados extends AppCompatActivity {
     EditText ed_sobra;
     int qtdAnimais;
     String nomeEspecie;
+    List<Animal> listaAnimais;
+    String dataCompleta;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        listaAnimais = new ArrayList<>();
         setContentView(R.layout.add_dados_activity);
         findViews();
         setViewListeners();
@@ -92,7 +96,7 @@ public class AddDados extends AppCompatActivity {
                     View view = getLayoutInflater().inflate(R.layout.inflate_animais,horizontal,false);
                     TextView txtItem = view.findViewById(R.id.tv);
                     TextView edtItem = view.findViewById(R.id.ed);
-                    txtItem.setId(i+qtdAnimais);
+                    txtItem.setId(i+30);
                     edtItem.setId(i);//começa da qtsanimais, para diferenciar dos ids do textview
                     txtItem.setText(experimento.getEspecie()+" "+i);
                     edtItem.setHint("peso");
@@ -112,26 +116,45 @@ public class AddDados extends AppCompatActivity {
     }
 
     public void salvarDados(String racao, float adicionado,float sobra){
-        String data = getDataAtual();
         float consumido = adicionado - sobra;
         float percentualConsumido = (100*consumido)/adicionado;
-        String dataCompleta = getDataAtual();
+        dataCompleta = getDataAtual();
         int d = Integer.parseInt(dataCompleta.split("-")[2]);
         int m = Integer.parseInt(dataCompleta.split("-")[1]);
         int a = Integer.parseInt(dataCompleta.split("-")[0]);
 
-        Dia dia = new Dia(racao,adicionado,sobra,consumido,percentualConsumido,d,m,a);
+        Coleta coleta = new Coleta(racao,adicionado,sobra,consumido,percentualConsumido,d,m,a);
 
-        logadoReference.child("experimentos").child(experimentoClicado).child("dados").child(dataCompleta).setValue(dia);
-        for(int i = 1;i <= qtdAnimais;i++){
-            EditText editText = (EditText) findViewById(i);
-            float pesoAnimal= Float.parseFloat(editText.getText().toString());
-            String nomeAnimal = nomeEspecie+" "+i;
-            logadoReference.child("experimentos").child(experimentoClicado).child("dados").child(dataCompleta).child("pesagem").child(nomeAnimal).setValue(pesoAnimal);
+        logadoReference.child("experimentos").child(experimentoClicado).child("dados").child(dataCompleta).setValue(coleta);
 
-        }
-        Toast.makeText(this, "Dados adicionados com sucesso", Toast.LENGTH_SHORT).show();
-        finish();
+        logadoReference.child("experimentos").child(experimentoClicado).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Experimento experimento = dataSnapshot.getValue(Experimento.class);
+                listaAnimais = experimento.getAnimais();
+                for(int i = 1;i <= qtdAnimais;i++){
+                    EditText editText = (EditText) findViewById(i);
+                    float peso= Float.parseFloat(editText.getText().toString());
+                    listaAnimais.get(i-1).setPeso(peso);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                logadoReference.child("experimentos").child(experimentoClicado).child("dados").child(dataCompleta).child("pesagem").setValue(listaAnimais);
+                Toast.makeText(AddDados.this, "Dados adicionados com sucesso", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        },500);
+
     }
 
     public String getDataAtual() {

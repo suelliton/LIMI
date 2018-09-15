@@ -26,7 +26,6 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 
 import static com.example.suelliton.limi.activities.Splash.LOGADO;
@@ -243,7 +242,7 @@ public void setViewListeners(){
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("usuarioLogado", LOGADO);
                 editor.apply();
-                startActivity(new Intent(Login.this,ListExperimento.class));
+                startActivity(new Intent(Login.this,Experimento.class));
                 finish();
             } else {
                 ed_password.setError(getString(R.string.error_incorrect_password));

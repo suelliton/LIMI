@@ -20,13 +20,11 @@ import android.widget.Toast;
 
 import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.adapters.ExperimentoAdapter;
-import com.example.suelliton.limi.models.Experimento;
 
 import com.example.suelliton.limi.utils.MyDatabaseUtil;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -39,14 +37,14 @@ import static com.example.suelliton.limi.activities.Splash.LOGADO;
 import static com.example.suelliton.limi.activities.Splash.database;
 import static com.example.suelliton.limi.activities.Splash.usuarioReference;
 
-public class ListExperimento extends AppCompatActivity
+public class Experimento extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     RecyclerView recyclerExperimento;
     public static DatabaseReference logadoReference;
 
     ValueEventListener listener;
     ExperimentoAdapter experimentoAdapter;
-    List<Experimento> listaExperimentos;
+    List<com.example.suelliton.limi.models.Experimento> listaExperimentos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +59,7 @@ public class ListExperimento extends AppCompatActivity
         fabAddDieta.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(ListExperimento.this,AddExperimento.class));
+                startActivity(new Intent(Experimento.this,AddExperimento.class));
                 //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                   //      .setAction("Action", null).show();
             }
@@ -100,7 +98,7 @@ public class ListExperimento extends AppCompatActivity
                 listaExperimentos.removeAll(listaExperimentos);
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        Experimento e = data.getValue(Experimento.class);
+                        com.example.suelliton.limi.models.Experimento e = data.getValue(com.example.suelliton.limi.models.Experimento.class);
                         listaExperimentos.add(e);
                     }
                     experimentoAdapter.notifyDataSetChanged();
@@ -161,7 +159,7 @@ public class ListExperimento extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_adicionar_colaborador) {
-            startActivity(new Intent(ListExperimento.this,AddColaborador.class));
+            startActivity(new Intent(Experimento.this,AddColaborador.class));
 
         } else if (id == R.id.nav_gallery) {
 
@@ -174,7 +172,7 @@ public class ListExperimento extends AppCompatActivity
             editor.apply();
             LOGADO="";
             //USUARIO_OBJETO_LOGADO = null;
-            startActivity(new Intent(ListExperimento.this,Login.class));
+            startActivity(new Intent(Experimento.this,Login.class));
             finish();
 
         } else if (id == R.id.nav_share) {

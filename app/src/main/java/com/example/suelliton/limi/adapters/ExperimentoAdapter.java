@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.suelliton.limi.activities.AddDados;
-import com.example.suelliton.limi.activities.ShowGrafico;
+import com.example.suelliton.limi.activities.Detalhes;
 import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.models.Experimento;
 
@@ -49,7 +49,7 @@ public class ExperimentoAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 experimentoClicado = experimentoEscolhido.getNome();
-                context.startActivity(new Intent(view.getContext(),ShowGrafico.class));
+                context.startActivity(new Intent(view.getContext(),Detalhes.class));
             }
         });
         experimentoholder.fab_adicionar_dia.setOnClickListener(new View.OnClickListener() {

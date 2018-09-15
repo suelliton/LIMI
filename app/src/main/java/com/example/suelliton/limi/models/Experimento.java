@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Experimento {
     private String nome;
-    private List<Dia> dados;
+    private List<Animal> animais;
     private String descricao;
     private String especie;
     private int qtd_animais;
@@ -12,11 +12,20 @@ public class Experimento {
     public Experimento() {
     }
 
-    public Experimento(String nome, String descricao, String especie, int qtd_animais) {
+    public Experimento(String nome, List<Animal> animais, String descricao, String especie, int qtd_animais) {
         this.nome = nome;
+        this.animais = animais;
         this.descricao = descricao;
         this.especie = especie;
         this.qtd_animais = qtd_animais;
+    }
+
+    public List<Animal> getAnimais() {
+        return animais;
+    }
+
+    public void setAnimais(List<Animal> animais) {
+        this.animais = animais;
     }
 
     public int getQtd_animais() {

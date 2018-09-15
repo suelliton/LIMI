@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.suelliton.limi.R;
@@ -58,7 +57,7 @@ public class Splash extends AppCompatActivity {
                         Usuario usuario = dataSnapshot.getValue(Usuario.class);
                         if (usuario != null) {
                             //Toast.makeText(SplashActivity.this, "usuario logado : "+LOGADO, Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Splash.this, ListExperimento.class));
+                            startActivity(new Intent(Splash.this, Experimento.class));
                             finish();
                         }
                     } catch (Exception e) {

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,6 +16,85 @@
         android:layout_marginLeft="1dp"
         android:layout_marginRight="1dp"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        />
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="280dp"   />
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radio_padrao"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Padrão" />
+
+        <RadioButton
+            android:id="@+id/radio_lc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LC" />
+
+        <RadioButton
+            android:id="@+id/radio_lf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LF" />
+
+        <RadioButton
+            android:id="@+id/radio_lp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LP" />
+
+
+
+
+
+        <RadioButton
+            android:id="@+id/radio_lpcf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LPCF" />
+
+        <RadioButton
+            android:id="@+id/radio_lcf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LCF" />
+
+        <RadioButton
+            android:id="@+id/radio_hc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HC" />
+
+        <RadioButton
+            android:id="@+id/radio_hf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HF" />
+
+        <RadioButton
+            android:id="@+id/radio_hp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HP" />
+
+        <RadioButton
+            android:id="@+id/radio_hpcf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HPCF" />
+
+        <RadioButton
+            android:id="@+id/radio_hcf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HCF" />
+
+</RadioGroup>
+
+</LinearLayout>
+</ScrollView>

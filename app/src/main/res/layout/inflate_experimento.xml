@@ -39,18 +39,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/fab_margin"
-                    android:text=" 3 Fotos"
+                    android:text="nome"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="15dp" />
+                    android:textSize="25dp" />
+                <TextView
+                    android:id="@+id/label_especie"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:text="especie"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20dp" />
 
                 <TextView
                     android:id="@+id/label_descricao"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/fab_margin"
-                    android:text=" 3 Fotos"
+                    android:text="desc"
                     android:textColor="@color/colorPrimaryDark"
-                    android:textSize="15dp" />
+                    android:textSize="20dp" />
 
 
             </LinearLayout>
@@ -58,6 +66,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_weight="1"
+                android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 

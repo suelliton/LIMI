@@ -44,7 +44,7 @@ public class ExperimentoAdapter extends RecyclerView.Adapter {
 
         experimentoholder.nome.setText(experimentoEscolhido.getNome());
         experimentoholder.descricao.setText(experimentoEscolhido.getDescricao());
-
+        experimentoholder.especie.setText(experimentoEscolhido.getQtd_animais()+" "+experimentoEscolhido.getEspecie()+"s");
         experimentoholder.row.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -70,12 +70,14 @@ public class ExperimentoAdapter extends RecyclerView.Adapter {
     public class DietaViewHolder extends RecyclerView.ViewHolder {
         final TextView nome;
         final TextView descricao;
+        final TextView especie;
         final LinearLayout row;
         final FloatingActionButton fab_adicionar_dia;
         public DietaViewHolder(View v) {
             super(v);
             nome = v.findViewById(R.id.label_nome);
             descricao = v.findViewById(R.id.label_descricao);
+            especie = v.findViewById(R.id.label_especie);
             row = v.findViewById(R.id.row);
             fab_adicionar_dia = v.findViewById(R.id.fab_adicionar_dia);
         }

@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.models.Animal;
@@ -39,6 +42,18 @@ public class FragmentPeso extends Fragment {
     List<Coleta> listaColetas;
     private LineChart mChart;
     View v;
+    RadioButton radio_padrao;
+    RadioButton radio_lc;
+    RadioButton radio_lf;
+    RadioButton radio_lp;
+    RadioButton radio_lpcf;
+    RadioButton radio_lcf;
+    RadioButton radio_hc;
+    RadioButton radio_hf;
+    RadioButton radio_hp;
+    RadioButton radio_hpcf;
+    RadioButton radio_hcf;
+    String RacaoEscolhida = "Padrão";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v =  inflater.inflate(R.layout.peso_fragment, container, false);
@@ -47,16 +62,91 @@ public class FragmentPeso extends Fragment {
         listaColetas =  new ArrayList<>();
 
         loadListas();
-
-
+        findViews();
+        setListeners();
 
 
         return v;
     }
+    public void findViews(){
+        radio_padrao = (RadioButton) v.findViewById(R.id.radio_padrao);
+        radio_lc = (RadioButton) v.findViewById(R.id.radio_lc);
+        radio_lf = (RadioButton) v.findViewById(R.id.radio_lf);
+        radio_lp = (RadioButton) v.findViewById(R.id.radio_lp);
+        radio_lpcf = (RadioButton) v.findViewById(R.id.radio_lpcf);
+        radio_lcf = (RadioButton) v.findViewById(R.id.radio_lcf);
+        radio_hc = (RadioButton) v.findViewById(R.id.radio_hc);
+        radio_hf = (RadioButton) v.findViewById(R.id.radio_hf);
+        radio_hp = (RadioButton) v.findViewById(R.id.radio_hp);
+        radio_hpcf = (RadioButton) v.findViewById(R.id.radio_hpcf);
+        radio_hcf = (RadioButton) v.findViewById(R.id.radio_hcf);
+
+
+
+    }
+
+    public void setListeners(){
+            RadioGroup radioGroup = (RadioGroup) v.findViewById(R.id.radio_group);
+            radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    switch (checkedId){
+                        case R.id.radio_padrao:
+                            RacaoEscolhida = "Padrão";
+                            loadListas();
+                            break;
+                        case R.id.radio_lc:
+                            RacaoEscolhida = "Low Carb";
+                            loadListas();
+                            break;
+                        case R.id.radio_lf:
+                            RacaoEscolhida = "Low Fat";
+                            loadListas();
+                            break;
+                        case R.id.radio_lp:
+                            RacaoEscolhida = "Low Prot";
+                            loadListas();
+                            break;
+                        case R.id.radio_lpcf:
+                            RacaoEscolhida = "Low Prot/Carb/Fat";
+                            loadListas();
+                            break;
+                        case R.id.radio_lcf:
+                            RacaoEscolhida = "Low Carb/Fat";
+                            loadListas();
+                            break;
+                        case R.id.radio_hc:
+                            RacaoEscolhida = "High Carb";
+                            loadListas();
+                            break;
+                        case R.id.radio_hf:
+                            RacaoEscolhida = "High Fat";
+                            loadListas();
+                            break;
+                        case R.id.radio_hp:
+                            RacaoEscolhida = "High Prot";
+                            loadListas();
+                            break;
+                        case R.id.radio_hpcf:
+                            RacaoEscolhida = "High Prot/Carb/Fat";
+                            loadListas();
+                            break;
+                        case R.id.radio_hcf:
+                            RacaoEscolhida = "High Carb/Fat";
+                            loadListas();
+                            break;
+                    }
+                }
+            });
+
+
+    }
 
     public void loadListas(){
+        listaPesosFeminino.removeAll(listaPesosFeminino);
+        listaPesosMasculino.removeAll(listaPesosMasculino);
         Log.i("pesos","chegou!");
-        Query query = logadoReference.child("experimentos").child(experimentoClicado).child("dados");
+        Query query = logadoReference.child("experimentos").child(experimentoClicado).child("dados").orderByChild("racao").equalTo(RacaoEscolhida).limitToFirst(100);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -131,7 +221,8 @@ public class FragmentPeso extends Fragment {
         l.setEnabled(false);
 
         //mChart.animateXY(2000, 2000);
-        mChart.animateY(2000);
+        //mChart.animateY(2000);
+        //mChart.animateX(500);
 
 /*
         List<ILineDataSet> sets = mChart.getData().getDataSets();

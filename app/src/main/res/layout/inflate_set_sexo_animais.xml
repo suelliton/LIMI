@@ -26,16 +26,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <RadioButton
-            android:id="@+id/radio_masculino"
+            android:id="@+id/radio_macho"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="masculino" />
+            android:text="macho" />
 
         <RadioButton
-            android:id="@+id/radio_feminino"
+            android:id="@+id/radio_femea"
             android:checked="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="feminino" />
+            android:text="femea" />
     </RadioGroup>
 </android.support.constraint.ConstraintLayout>

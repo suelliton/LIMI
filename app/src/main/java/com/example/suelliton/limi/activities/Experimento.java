@@ -53,7 +53,7 @@ public class Experimento extends AppCompatActivity
         database = MyDatabaseUtil.getDatabase();
         logadoReference = database.getReference("usuarios").child(LOGADO);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+       setSupportActionBar(toolbar);
 
         FloatingActionButton fabAddDieta = (FloatingActionButton) findViewById(R.id.fab_add_dieta);
         fabAddDieta.setOnClickListener(new View.OnClickListener() {

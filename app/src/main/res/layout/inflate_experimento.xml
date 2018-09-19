@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/fab_margin"
                     android:text="nome"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/preto"
                     android:textSize="25dp" />
                 <TextView
                     android:id="@+id/label_especie"
@@ -48,7 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/fab_margin"
                     android:text="especie"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/preto"
                     android:textSize="20dp" />
 
                 <TextView
@@ -57,7 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/fab_margin"
                     android:text="desc"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/preto"
                     android:textSize="20dp" />
 
 

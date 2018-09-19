@@ -1,6 +1,5 @@
 package com.example.suelliton.limi.activities;
 
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -116,13 +115,11 @@ public class AddExperimento extends AppCompatActivity {
             animal = new Animal(especie+" "+i,"",0);
             RadioGroup radioGroup = (RadioGroup) findViewById(i);
             radioGroup.getCheckedRadioButtonId();
-            if(R.id.radio_masculino == radioGroup.getCheckedRadioButtonId() ){
-                animal.setSexo("masculino");
-                Log.i("sexo","masculino");
+            if(R.id.radio_macho == radioGroup.getCheckedRadioButtonId() ){
+                animal.setSexo("macho");
                 animais.add(animal);
-            }else if(R.id.radio_feminino == radioGroup.getCheckedRadioButtonId()){
-                animal.setSexo("feminino");
-                Log.i("sexo","feminino");
+            }else if(R.id.radio_femea == radioGroup.getCheckedRadioButtonId()){
+                animal.setSexo("femea");
                 animais.add(animal);
             }
             try {

@@ -2,7 +2,6 @@ package com.example.suelliton.limi.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.example.suelliton.limi.R;
 import com.example.suelliton.limi.models.Animal;
@@ -37,8 +35,8 @@ import static com.example.suelliton.limi.activities.Experimento.logadoReference;
 import static com.example.suelliton.limi.adapters.ExperimentoAdapter.experimentoClicado;
 
 public class FragmentPeso extends Fragment {
-    List<Float> listaPesosMasculino;
-    List<Float> listaPesosFeminino;
+    List<Float> listaPesosMacho;
+    List<Float> listaPesosFemea;
     List<Coleta> listaColetas;
     private LineChart mChart;
     View v;
@@ -53,12 +51,12 @@ public class FragmentPeso extends Fragment {
     RadioButton radio_hp;
     RadioButton radio_hpcf;
     RadioButton radio_hcf;
-    String RacaoEscolhida = "Padrão";
+    String racaoEscolhida = "Padrão";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         v =  inflater.inflate(R.layout.peso_fragment, container, false);
-        listaPesosFeminino = new ArrayList<>();
-        listaPesosMasculino = new ArrayList<>();
+        listaPesosFemea = new ArrayList<>();
+        listaPesosMacho = new ArrayList<>();
         listaColetas =  new ArrayList<>();
 
         loadListas();
@@ -92,47 +90,47 @@ public class FragmentPeso extends Fragment {
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     switch (checkedId){
                         case R.id.radio_padrao:
-                            RacaoEscolhida = "Padrão";
+                            racaoEscolhida = "Padrão";
                             loadListas();
                             break;
                         case R.id.radio_lc:
-                            RacaoEscolhida = "Low Carb";
+                            racaoEscolhida = "Low Carb";
                             loadListas();
                             break;
                         case R.id.radio_lf:
-                            RacaoEscolhida = "Low Fat";
+                            racaoEscolhida = "Low Fat";
                             loadListas();
                             break;
                         case R.id.radio_lp:
-                            RacaoEscolhida = "Low Prot";
+                            racaoEscolhida = "Low Prot";
                             loadListas();
                             break;
                         case R.id.radio_lpcf:
-                            RacaoEscolhida = "Low Prot/Carb/Fat";
+                            racaoEscolhida = "Low Prot/Carb/Fat";
                             loadListas();
                             break;
                         case R.id.radio_lcf:
-                            RacaoEscolhida = "Low Carb/Fat";
+                            racaoEscolhida = "Low Carb/Fat";
                             loadListas();
                             break;
                         case R.id.radio_hc:
-                            RacaoEscolhida = "High Carb";
+                            racaoEscolhida = "High Carb";
                             loadListas();
                             break;
                         case R.id.radio_hf:
-                            RacaoEscolhida = "High Fat";
+                            racaoEscolhida = "High Fat";
                             loadListas();
                             break;
                         case R.id.radio_hp:
-                            RacaoEscolhida = "High Prot";
+                            racaoEscolhida = "High Prot";
                             loadListas();
                             break;
                         case R.id.radio_hpcf:
-                            RacaoEscolhida = "High Prot/Carb/Fat";
+                            racaoEscolhida = "High Prot/Carb/Fat";
                             loadListas();
                             break;
                         case R.id.radio_hcf:
-                            RacaoEscolhida = "High Carb/Fat";
+                            racaoEscolhida = "High Carb/Fat";
                             loadListas();
                             break;
                     }
@@ -143,24 +141,36 @@ public class FragmentPeso extends Fragment {
     }
 
     public void loadListas(){
-        listaPesosFeminino.removeAll(listaPesosFeminino);
-        listaPesosMasculino.removeAll(listaPesosMasculino);
+        listaPesosFemea.removeAll(listaPesosFemea);
+        listaPesosMacho.removeAll(listaPesosMacho);
         Log.i("pesos","chegou!");
-        Query query = logadoReference.child("experimentos").child(experimentoClicado).child("dados").orderByChild("racao").equalTo(RacaoEscolhida).limitToFirst(100);
+        Query query = logadoReference.child("experimentos").child(experimentoClicado).child("dados").orderByChild("racao").equalTo(racaoEscolhida).limitToFirst(100);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data:dataSnapshot.getChildren()) {
                     Coleta coleta = data.getValue(Coleta.class);
+                    int contF = 0 ;
+                    int contM  = 0;
+                    float valoresF = 0;
+                    float valoresM = 0;
                     for (Animal a :  coleta.getPesagem() ) {
-                        if(a.getSexo().equals("masculino")){
-                            listaPesosMasculino.add(a.getPeso());
+                        if(a.getSexo().equals("macho")){
+                            valoresM = valoresM + a.getPeso();
+                            contM = contM+1;
                         }else{
-                            listaPesosFeminino.add(a.getPeso());
+                            valoresF = valoresF + a.getPeso();
+                            contF = contF +1;
                         }
                     }
+                    if(contF == 0) contF = 1;
+                    if(contM == 0) contM = 1;
+                    listaPesosMacho.add(valoresM/contM);
+                    listaPesosFemea.add(valoresF/contF);
                 }
-                carregaGrafico();
+                if(listaPesosFemea.size()>0 || listaPesosMacho.size() >0) {
+                    carregaGrafico();
+                }
             }
 
             @Override
@@ -195,8 +205,8 @@ public class FragmentPeso extends Fragment {
 
         x.setCenterAxisLabels(false);
         x.setTextSize(10f);
-        if(listaPesosMasculino.size() < 15){
-            x.setLabelCount(listaPesosMasculino.size(),true);
+        if(listaPesosMacho.size() < 15){
+            x.setLabelCount(listaPesosMacho.size(),true);
         }else{
             x.setLabelCount(15);
         }
@@ -214,7 +224,7 @@ public class FragmentPeso extends Fragment {
 
         mChart.getAxisRight().setEnabled(false);
 
-        setData(listaPesosMasculino,listaPesosFeminino);
+        setData(listaPesosMacho, listaPesosFemea);
 
 
         Legend l = mChart.getLegend();
@@ -261,10 +271,14 @@ public class FragmentPeso extends Fragment {
         LineDataSet set2;
 
         if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet)mChart.getData().getDataSetByIndex(0);
-            set1.setValues(yValsM);
-            set2 = (LineDataSet)mChart.getData().getDataSetByIndex(1);
-            set2.setValues(yValsF);
+            if(masculino.size() > 0) {
+                set1 = (LineDataSet) mChart.getData().getDataSetByIndex(0);
+                set1.setValues(yValsM);
+            }
+            if(feminino.size() > 0) {
+                set2 = (LineDataSet) mChart.getData().getDataSetByIndex(1);
+                set2.setValues(yValsF);
+            }
             mChart.getData().notifyDataChanged();
             mChart.notifyDataSetChanged();
         } else {
